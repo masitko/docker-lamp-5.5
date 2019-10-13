@@ -1,0 +1,33 @@
+version: '2'
+
+services:
+  server:
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: server
+    ports:
+      - 8380:80
+    volumes:
+      - /home/marek/VMs:/var/www/html
+      - ./logs/apache2:/var/log/apache2
+      - ./apache/conf:/etc/apache2/sites-available/
+
+  mysql:
+    image: mysql:5.5
+    container_name: mysql
+    # restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=123
+      # - MYSQL_DATABASE=some_db
+      - MYSQL_USER=dbuser
+      - MYSQL_PASSWORD=123
+    ports:
+      - 8306:3306
+    volumes:
+      - ./db_data:/var/lib/mysql
+      - ./mysql/conf:/etc/mysql/conf.d
